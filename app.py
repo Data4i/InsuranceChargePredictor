@@ -14,7 +14,7 @@ left_col, center_col, right_col = st.columns((1,2,1))
 
 
 with center_col:
-    st.header(':red[Health Insurance Charge Predictor]  ❤️')
+    st.header('Health Insurance Charge Predictor  ❤️')
 
 
 @st.cache_resource
