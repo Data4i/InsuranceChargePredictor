@@ -4,9 +4,6 @@ import streamlit as st
 
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import StandardScaler, OrdinalEncoder, OneHotEncoder
-from sklearn.pipeline import Pipeline
-from sklearn.compose import ColumnTransformer
 
 st.set_page_config(page_title='Insurance Charge Predictor', layout = 'wide', page_icon='heart')
 
@@ -18,9 +15,10 @@ with center_col:
 
 
 @st.cache_resource
-def get_model(filename:str):
-    model = pickle.load(open(filename, 'rb'))
-    return model
+def get_model(model_filename:str, scaler_filename:str):
+    model = pickle.load(open(model_filename, 'rb'))
+    scaler = pickle.load(open(scaler_filename, 'rb'))
+    return model, scaler
 
 @st.cache_data
 def get_used_df(df_filename):
@@ -29,8 +27,10 @@ def get_used_df(df_filename):
 df_filename = 'data/insurance.csv'
 used_df = get_used_df(df_filename)
 
-filename = 'models/insurance_forest2_model.pkl'
-model = get_model(filename)
+model_filename = 'models/insurance_forest2_model.pkl'
+scaler_filename = 'models/standard_scaler.pkl'
+model, scaler = get_model(model_filename, scaler_filename)
+
 
 def feauture_engineering(df):
     # ordinalEncoder = OrdinalEncoder()
@@ -39,8 +39,6 @@ def feauture_engineering(df):
     df['region'] = df['region'].apply(lambda x: 3 if x == 'southwest' else 2 if x == 'southeast' else 1 if x == 'northwest' else 0)
 
     return df
-
-
 
 
 with center_col:
@@ -68,10 +66,10 @@ with center_col:
 
 
         info_df = pd.DataFrame(infos, index = [1])
-        # info_df['region'] = info['region'].apply(lambda: )
         good_df = feauture_engineering(info_df)
-        # st.write(info_df)
-        estimated_price = model.predict(good_df)
+        scaled_df = scaler.transform(good_df)
+        # st.write(scaled_df)
+        estimated_price = model.predict(scaled_df)
         st.write(f"Estimated Charges To Pay: ${estimated_price[0]: .2f}")
 
 
