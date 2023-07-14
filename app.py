@@ -5,7 +5,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 
-st.set_page_config(page_title='Insurance Charge Predictor', layout = 'wide', page_icon='heart')
+st.set_page_config(page_title='Insurance Charge Predictor', layout = 'wide', page_icon='🏥')
 
 left_col, center_col, right_col = st.columns((1,2,1))
 
